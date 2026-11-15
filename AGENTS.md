@@ -52,6 +52,9 @@ Standalone PHP-аналог WordPress-плагина `Ejabberd Account Tools`.
 # integration-тесты (fake ejabberd + Mailpit)
 tests/integration.sh
 
+# smoke против реального тестового ejabberd (нужен .testenv/config.real.php)
+tests/real-smoke.sh
+
 # dev-сервер
 PHP_BIN=.testenv/php/php bin/serve.sh
 ```

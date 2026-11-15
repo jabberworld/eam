@@ -88,6 +88,9 @@
   повторное использование токена, CSRF, honeypot, API username, язык.
 - Real smoke: `tests/real-smoke.sh` против `ets.jabberworld.info` —
   все шаги прошли; создан и удалён только одноразовый `eamtestreal*`.
+- Встроенная капча: в полном приложении проверены рендер PNG, ошибка при
+  неверном коде, новая картинка после ошибки и `/api/captcha`.
+- Первый коммит: `422823d feat: standalone ejabberd account manager`.
 
 ### Известные ограничения
 
