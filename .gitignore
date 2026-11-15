@@ -1,0 +1,7 @@
+/.testenv/
+/config/config.php
+/storage/
+/vendor/
+/tests/tmp/
+*.log
+.phpunit.result.cache
