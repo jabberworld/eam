@@ -78,14 +78,24 @@
 - Документация: `README.md`, `docs/INSTALL.md`, `docs/EJABBERD.md`,
   `docs/CONFIG.md`.
 - Вспомогательное: `bin/serve.sh`, `bin/cleanup.php`.
+- Shared-хостинг (`public_html` + `_app`):
+  - `src/Bootstrap.php` — общий bootstrap, `EAM_APP_DIR`, выбор конфига;
+  - `deploy/shared/index.php` и `.htaccess`;
+  - `bin/package-shared.sh` — сборка `dist/eam-shared/`;
+  - `docs/SHARED_HOSTING.md`;
+  - приоритет конфига: `EAM_CONFIG` → `../config.php` → `_app/config/config.php`;
+  - `_app` закрыт `.htaccess`, `storage` остаётся внутри `_app`.
 
 ### Проверки
 
 - Синтаксис: все PHP-файлы проходят `php -l`.
-- Unit: `tests/run.php` — 8 тестов, 0 ошибок.
+- Unit: `tests/run.php` — 9 тестов, 0 ошибок.
 - Integration: `tests/integration.sh` — fake ejabberd + Mailpit, полный цикл
   регистрация → активация → смена email → сброс пароля → удаление,
   повторное использование токена, CSRF, honeypot, API username, язык.
+- Shared layout: `tests/shared-layout.sh` — внешний конфиг выигрывает,
+  внутренний используется после удаления внешнего, `_app` закрыт, assets
+  доступны, storage внутри `_app`, регистрация и активация работают.
 - Real smoke: `tests/real-smoke.sh` против `ets.jabberworld.info` —
   все шаги прошли; создан и удалён только одноразовый `eamtestreal*`.
 - Встроенная капча: в полном приложении проверены рендер PNG, ошибка при
@@ -116,3 +126,4 @@
 - [x] Удаление аккаунта.
 - [x] Тесты.
 - [x] Документация.
+- [x] Shared-хостинг: `_app`, внешний/внутренний `config.php`, упаковка.

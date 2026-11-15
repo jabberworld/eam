@@ -1,7 +1,8 @@
 # EAM — Ejabberd Account Manager
 
 Standalone PHP-аналог WordPress-плагина **Ejabberd Account Tools** (GPLv3).
-Без WordPress, без отдельной админки: все настройки — в `config/config.php`.
+Без WordPress, без отдельной админки: настройки — в `config/config.php`
+(стандартная раскладка) или во внешнем `config.php` (shared-хостинг).
 
 ## Что делает
 
@@ -24,10 +25,31 @@ src/             PHP-классы (Eam\)
 templates/       HTML-шаблоны и шаблоны писем
 lang/            словари en/ru/uk/pl
 storage/         sqlite, сессии, логи (gitignored)
-tests/           unit- и integration-тесты, fake ejabberd API
-docs/            установка, настройка ejabberd и конфига
+tests/           unit-, integration- и shared-layout тесты, fake ejabberd API
+docs/            установка, настройка ejabberd, конфига и shared-хостинга
+deploy/shared/   шаблоны index.php/.htaccess для public_html
+bin/             serve, cleanup, package-shared
 .testenv/        локальный PHP/Mailpit (gitignored)
 ```
+
+## Shared-хостинг
+
+Если домен смотрит на `public_html`, а менять document root неудобно:
+
+```bash
+bin/package-shared.sh
+```
+
+Пакет `dist/eam-shared/` содержит front controller, `assets/` и закрытый
+каталог `_app/`. Конфиг можно оставить в `_app/config/config.php` или вынести
+на уровень выше как `config.php` — внешний файл имеет приоритет:
+
+```text
+EAM_CONFIG → ../config.php → _app/config/config.php
+```
+
+Подробно: `docs/SHARED_HOSTING.md`. Обязательны `.htaccess`/`mod_rewrite`
+и проверка, что `/_app/...` отдаёт `403`/`404`.
 
 ## Быстрый старт (разработка)
 
@@ -44,6 +66,7 @@ php -S 127.0.0.1:8080 -t public public/router.php
 ```bash
 .testenv/php/php tests/run.php            # unit
 tests/integration.sh                      # integration с fake ejabberd + Mailpit
+tests/shared-layout.sh                    # shared-раскладка и конфиг
 ```
 
 ## Документация
@@ -51,6 +74,7 @@ tests/integration.sh                      # integration с fake ejabberd + Mailp
 - `docs/INSTALL.md` — установка, веб-сервер, права, тесты.
 - `docs/EJABBERD.md` — `mod_http_api`, `api_permissions`, Basic/OAuth.
 - `docs/CONFIG.md` — все параметры `config/config.php`.
+- `docs/SHARED_HOSTING.md` — `public_html` + `_app`, внешний/внутренний конфиг.
 - `docs/PROGRESS.md` — журнал решений и проверок.
 
 ## Правила проекта

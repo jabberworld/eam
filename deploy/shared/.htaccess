@@ -1,0 +1,20 @@
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Private application directory: code, templates, translations, storage, config
+    RewriteRule ^_app(/|$) - [F,L,NC]
+
+    # Hidden files
+    RewriteRule (^|/)\. - [F,L]
+
+    # Common data/backup files, defence in depth
+    RewriteRule \.(sqlite|db|log|bak|old|zip|tar|gz|env)$ - [F,L,NC]
+
+    # Front controller
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>

@@ -1,5 +1,6 @@
 /.testenv/
 /config/config.php
+/dist/
 /storage/
 /vendor/
 /tests/tmp/

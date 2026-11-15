@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../src/autoload.php';
 
+use Eam\Bootstrap;
 use Eam\Captcha\BuiltinCaptcha;
 use Eam\Captcha\MathCaptcha;
 use Eam\Config;
@@ -163,6 +164,31 @@ test('router dispatch and 404', function (): void {
     $missing = $router->dispatch(new Request('GET', '/nope', [], [], [], [], [], []));
     assertSame(404, $missing->status());
     assertSame('missing', $missing->body());
+});
+
+test('bootstrap config resolution', function () use ($base): void {
+    $dir = $base . '/bootstrap';
+    rrmdir($dir);
+    mkdir($dir, 0770, true);
+    $external = $dir . '/config.php';
+    $internal = $dir . '/internal.php';
+    $env = $dir . '/env.php';
+    file_put_contents($external, "<?php return [];\n");
+    file_put_contents($internal, "<?php return [];\n");
+    file_put_contents($env, "<?php return [];\n");
+
+    $old = getenv('EAM_CONFIG');
+    putenv('EAM_CONFIG');
+    assertSame($external, Bootstrap::resolveConfig([$external, $internal]), 'first existing candidate should win');
+    assertSame($internal, Bootstrap::resolveConfig([$dir . '/missing.php', $internal]), 'missing candidate should be skipped');
+    assertNull(Bootstrap::resolveConfig([$dir . '/missing.php']), 'no readable config should return null');
+    putenv('EAM_CONFIG=' . $env);
+    assertSame($env, Bootstrap::resolveConfig([$external, $internal]), 'EAM_CONFIG should win');
+    if ($old !== false) {
+        putenv('EAM_CONFIG=' . $old);
+    } else {
+        putenv('EAM_CONFIG');
+    }
 });
 
 test('sqlite token storage', function () use ($config, $logger, $base): void {

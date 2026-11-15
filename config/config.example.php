@@ -3,7 +3,13 @@
  * Пример конфигурации EAM.
  * Скопируйте в config/config.php и заполните секреты.
  * config/config.php исключён из git.
+ *
+ * Для shared-раскладки этот же файл можно переместить на уровень выше webroot
+ * как config.php: пути storage ниже используют EAM_APP_DIR и не зависят
+ * от расположения конфига.
  */
+
+$appDir = defined('EAM_APP_DIR') ? EAM_APP_DIR : dirname(__DIR__);
 
 return [
     'app' => [
@@ -137,9 +143,9 @@ return [
     'storage' => [
         // auto | sqlite | files
         'driver' => 'auto',
-        'sqlite_path' => __DIR__ . '/../storage/eam.sqlite',
-        'files_path' => __DIR__ . '/../storage/data',
-        'sessions_path' => __DIR__ . '/../storage/sessions',
+        'sqlite_path' => $appDir . '/storage/eam.sqlite',
+        'files_path' => $appDir . '/storage/data',
+        'sessions_path' => $appDir . '/storage/sessions',
     ],
 
     'logging' => [

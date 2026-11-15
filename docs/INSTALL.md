@@ -4,7 +4,7 @@
 
 - PHP **8.2+**.
 - Расширения PHP:
-  - обязательные: `curl`, `openssl`, `mbstring`, `intl`, `dom`, `session`, `json`;
+  - обязательные: `curl`, `openssl`, `mbstring`, `dom`, `session`, `json`;
   - рекомендуется: `sqlite3` (хранилище токенов и rate-limit);
   - опционально: `gd` (встроенная графическая капча; без GD используется математическая).
 - `pdo_sqlite` **не требуется**: SQLite работает через `SQLite3`.
@@ -15,9 +15,9 @@
 
 ## Развёртывание
 
-Document root должен указывать на каталог `public/`, а не на корень проекта.
-Если изменить document root нельзя, настройте rewrite на `public/index.php`
-и запретите доступ к `config/`, `src/`, `storage/`, `tests/`.
+### Стандартный режим
+
+Document root указывает на каталог `public/`.
 
 ```bash
 git clone <repo> eam
@@ -26,6 +26,32 @@ cp config/config.example.php config/config.php
 # отредактируйте config/config.php
 chmod -R u+rwX storage
 ```
+
+### Shared-хостинг (`public_html`)
+
+Если домен смотрит на `public_html` и менять document root неудобно,
+используйте `_app`-раскладку:
+
+```text
+public_html/
+  index.php
+  .htaccess
+  assets/
+  _app/          # закрыт .htaccess
+    src/ templates/ lang/ storage/ config/
+config.php       # внешний конфиг, приоритетный
+```
+
+Соберите пакет:
+
+```bash
+bin/package-shared.sh
+```
+
+Или разложите вручную по `docs/SHARED_HOSTING.md`. Внешний `config.php`
+на уровень выше webroot имеет приоритет над `_app/config/config.php`.
+Для shared-режима обязательны работающий `.htaccess`/`mod_rewrite` и проверка,
+что `/_app/...` отдаёт `403`/`404`.
 
 Сгенерируйте `app.secret`:
 
@@ -85,6 +111,8 @@ chown -R www-data:www-data storage
 chmod -R 750 storage
 ```
 
+Для shared-режима каталог называется `public_html/_app/storage/`:
+
 ## Проверка конфигурации
 
 ```bash
@@ -127,15 +155,29 @@ php -S 127.0.0.1:8080 -t public public/router.php
 */15 * * * * cd /path/to/eam && EAM_CONFIG=/path/to/eam/config/config.php php bin/cleanup.php >/dev/null 2>&1
 ```
 
+Для shared-раскладки `bin/cleanup.php` лежит вне пакета; очистка также
+выполняется probabilistically при обычных запросах. При необходимости
+запускайте cleanup из полного репозитория, указав внешний конфиг и каталог
+приложения:
+
+```bash
+EAM_CONFIG=/home/user/config.php \
+EAM_APP_DIR=/home/user/public_html/_app \
+php bin/cleanup.php
+```
+
 ## Тесты
 
 ```bash
 .testenv/php/php tests/run.php
 tests/integration.sh
+tests/shared-layout.sh
 tests/real-smoke.sh   # требует .testenv/config.real.php
 ```
 
 - `tests/run.php` — unit-тесты.
 - `tests/integration.sh` — полный поток с fake ejabberd API и Mailpit.
+- `tests/shared-layout.sh` — shared-раскладка, внешний/внутренний конфиг,
+  deny для `_app`, регистрация и активация.
 - `tests/real-smoke.sh` — smoke-тест против реального тестового ejabberd;
   создаёт одноразовый `eamtestreal*` и удаляет только его.

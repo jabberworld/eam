@@ -149,6 +149,30 @@
 
 `auto` использует SQLite при наличии расширения `sqlite3`, иначе файлы.
 
+В bootstrap определена константа `EAM_APP_DIR`. Используйте её, чтобы конфиг
+можно было переносить без правки путей:
+
+```php
+'storage' => [
+    'sqlite_path'   => EAM_APP_DIR . '/storage/eam.sqlite',
+    'files_path'    => EAM_APP_DIR . '/storage/data',
+    'sessions_path' => EAM_APP_DIR . '/storage/sessions',
+],
+```
+
+## Расположение конфига
+
+Приоритет:
+
+1. `EAM_CONFIG` — абсолютный путь;
+2. `../config.php` — внешний файл на уровень выше webroot (shared-режим);
+3. `_app/config/config.php` — внутренний файл;
+4. `config/config.php` — стандартная раскладка с document root `public/`.
+
+Для shared-режима внешний файл выигрывает, поэтому внутренний можно просто
+переместить на уровень выше без переименования. Подробнее:
+`docs/SHARED_HOSTING.md`.
+
 ## logging
 
 | Ключ | Назначение |
