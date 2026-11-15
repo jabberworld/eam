@@ -101,6 +101,7 @@
 - Встроенная капча: в полном приложении проверены рендер PNG, ошибка при
   неверном коде, новая картинка после ошибки и `/api/captcha`.
 - Первый коммит: `422823d feat: standalone ejabberd account manager`.
+- Shared-хостинг: `3e4f8d3 feat: add shared-hosting layout`.
 
 ### Известные ограничения
 
