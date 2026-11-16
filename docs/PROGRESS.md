@@ -134,6 +134,7 @@
 
 - Unit: 9/9.
 - Integration, shared-layout, package-shared, real-smoke — все прошли.
+- Коммит: `4116741 fix: support shared-hosting subdirectories`.
 
 ### Известные ограничения
 
