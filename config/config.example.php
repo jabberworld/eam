@@ -18,8 +18,15 @@ return [
         'default_locale' => 'ru',
         'locales' => ['en', 'ru', 'uk', 'pl'],
         'timezone' => 'UTC',
-        // Случайная строка >= 32 символов. Используется для HMAC-хешей токенов.
+        // Сгенерируйте один раз и вставьте сюда (любой вариант):
+        //   openssl rand -hex 32
+        //   php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'
+        //   head -c 32 /dev/urandom | base64
+        //
+        // Минимум 16 символов; рекомендуется 32 байта (64 hex-символа).
         'secret' => 'CHANGE_ME_RANDOM_SECRET_AT_LEAST_32_CHARS',
+        // Меняйте при обновлении CSS/JS, чтобы сбросить кеш браузера.
+        'asset_version' => '1',
         'session_cookie' => 'eam_session',
         // null — автоопределение по HTTPS.
         'session_secure' => null,

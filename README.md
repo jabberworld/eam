@@ -72,6 +72,7 @@ php -S 127.0.0.1:8080 -t public public/router.php
 tests/integration.sh                      # integration с fake ejabberd + Mailpit
 tests/shared-layout.sh                    # shared-раскладка и конфиг
 tests/package-shared.sh                   # сборка shared-пакета
+tests/subdir.sh                           # установка в подкаталоге /eam
 ```
 
 ## Документация

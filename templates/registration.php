@@ -44,7 +44,7 @@ $value = static fn (string $key): string => (string) ($form[$key] ?? '');
         <?php else: ?>
             <select id="host" name="host" required>
                 <?php foreach ($hosts as $host): ?>
-                    <option value="<?= e($host) ?>" <?= $value('host') === $host ? 'selected' : '' ?>>@<?= e($host) ?></option>
+                    <option value="<?= e($host) ?>" <?= $value('host') === $host ? 'selected' : '' ?>><?= e($host) ?></option>
                 <?php endforeach; ?>
             </select>
         <?php endif; ?>

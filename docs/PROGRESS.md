@@ -136,6 +136,25 @@
 - Integration, shared-layout, package-shared, real-smoke — все прошли.
 - Коммит: `4116741 fix: support shared-hosting subdirectories`.
 
+## 2026-11-16 — UI и captcha fixes
+
+- В `config/config.example.php` добавлены команды генерации `app.secret`
+  (`openssl rand -hex 32`, `php -r ...`, `head -c 32 /dev/urandom | base64`).
+- Домены в landing и `<option>` регистрации отображаются без префикса `@`;
+  полные JID по-прежнему содержат `@`.
+- Причина неработающей кнопки «Обновить код»: JS обращался к `/api/captcha`
+  от корня домена, а приложение установлено в `/eam`. Добавлен
+  `window.EAM_BASE_PATH` из `base_url`; все AJAX-запросы (`captcha`,
+  `check-username`, `validate-email`) теперь идут через `api()` с учётом
+  подкаталога.
+- Добавлен `app.asset_version`; `asset()` добавляет `?v=...`, чтобы браузер
+  не закешировал старый `app.js`.
+- Новый тест `tests/subdir.sh`: установка в `/eam`, проверка
+  `EAM_BASE_PATH`, `/eam/api/captcha`, assets и deny `_app`.
+- Integration-тест проверяет домены без `@`.
+- Все тесты (unit 9/9, integration, shared-layout, package-shared, subdir,
+  real-smoke) прошли.
+
 ### Известные ограничения
 
 - Web Presence не реализован (не входил в задачу).

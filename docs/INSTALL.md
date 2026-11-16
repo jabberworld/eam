@@ -57,13 +57,21 @@ BASE_PATH=/eam bin/package-shared.sh
 что `/_app/...` отдаёт `403`/`404`. Для подкаталога задайте `RewriteBase /eam/`
 и `app.base_url` с тем же путём.
 
-Сгенерируйте `app.secret`:
+Сгенерируйте `app.secret` (любой вариант):
 
 ```bash
 openssl rand -hex 32
+# или
+php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'
+# или
+head -c 32 /dev/urandom | base64
 ```
 
+Минимум — 16 символов, рекомендуется 32 байта (64 hex-символа).
 `config/config.php` содержит секреты и исключён из git.
+
+При обновлении CSS/JS увеличивайте `app.asset_version` в конфиге, чтобы
+браузер пользователя не использовал старую версию assets.
 
 ## Apache
 
@@ -177,6 +185,7 @@ php bin/cleanup.php
 tests/integration.sh
 tests/shared-layout.sh
 tests/package-shared.sh
+tests/subdir.sh
 tests/real-smoke.sh   # требует .testenv/config.real.php
 ```
 
@@ -186,5 +195,7 @@ tests/real-smoke.sh   # требует .testenv/config.real.php
   deny для `_app`, регистрация и активация.
 - `tests/package-shared.sh` — сборка пакета, наличие `.htaccess` и
   `RewriteBase /eam/`.
+- `tests/subdir.sh` — установка в `/eam`, `EAM_BASE_PATH`, `/eam/api/captcha`,
+  assets и deny `_app`.
 - `tests/real-smoke.sh` — smoke-тест против реального тестового ejabberd;
   создаёт одноразовый `eamtestreal*` и удаляет только его.

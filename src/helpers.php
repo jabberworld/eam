@@ -28,7 +28,12 @@ function url(string $path = '', array $query = []): string
 
 function asset(string $path): string
 {
-    return url('/assets/' . ltrim($path, '/'));
+    $url = url('/assets/' . ltrim($path, '/'));
+    $version = (string) Config::instance()->get('app.asset_version', '1');
+    if ($version !== '') {
+        $url .= (str_contains($url, '?') ? '&' : '?') . 'v=' . rawurlencode($version);
+    }
+    return $url;
 }
 
 function mask_email(string $email): string

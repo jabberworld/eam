@@ -58,6 +58,9 @@ tests/shared-layout.sh
 # проверка сборки shared-пакета и RewriteBase
 tests/package-shared.sh
 
+# установка в подкаталоге: EAM_BASE_PATH и /eam/api/captcha
+tests/subdir.sh
+
 # smoke против реального тестового ejabberd (нужен .testenv/config.real.php)
 tests/real-smoke.sh
 

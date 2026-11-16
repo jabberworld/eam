@@ -2,6 +2,11 @@
     'use strict';
 
     var i18n = window.EAM_I18N || {};
+    var basePath = (window.EAM_BASE_PATH || '').replace(/\/$/, '');
+
+    function api(path) {
+        return basePath + path;
+    }
 
     function setStatus(input, text, cls) {
         var field = input.closest('.field');
@@ -34,7 +39,7 @@
                 return;
             }
             setStatus(input, i18n.checking || '...');
-            post('/api/check-username', {username: username, host: host.value}).then(function (data) {
+            post(api('/api/check-username'), {username: username, host: host.value}).then(function (data) {
                 setStatus(input, data.message || '', data.status);
             }).catch(function () {
                 setStatus(input, '', 'error');
@@ -56,7 +61,7 @@
                 return;
             }
             setStatus(input, i18n.checking || '...');
-            post('/api/validate-email', {email: email}).then(function (data) {
+            post(api('/api/validate-email'), {email: email}).then(function (data) {
                 setStatus(input, data.message || '', data.status);
             }).catch(function () {
                 setStatus(input, '', 'error');
@@ -114,7 +119,7 @@
         var button = event.target.closest('[data-captcha-reload]');
         if (!button) return;
         event.preventDefault();
-        fetch('/api/captcha', {credentials: 'same-origin', headers: {'Accept': 'application/json'}})
+        fetch(api('/api/captcha'), {credentials: 'same-origin', cache: 'no-store', headers: {'Accept': 'application/json'}})
             .then(function (response) { return response.json(); })
             .then(function (data) {
                 var current = document.getElementById('captcha');

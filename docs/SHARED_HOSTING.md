@@ -200,6 +200,12 @@ curl -I https://example.com/_app/src/App.php         # 403/404
 заголовки CSP), значит rewrite работает, но `base_url` не содержит `/eam`
 или приложение установлено не туда, куда указывает URL.
 
+JS использует `window.EAM_BASE_PATH`, вычисленный из `base_url`, для запросов
+`/api/captcha`, `/api/check-username` и `/api/validate-email`. Если `base_url`
+не содержит подкаталог, кнопка «Обновить код» и живая проверка полей будут
+обращаться не туда. После изменения `base_url` обновите страницу с очисткой
+кеша; версия assets задаётся в `app.asset_version`.
+
 ## Сборка пакета
 
 ```bash

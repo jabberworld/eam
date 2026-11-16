@@ -7,6 +7,8 @@
 /** @var string $returnTo */
 /** @var array $locales */
 $siteName = (string) config('app.name', 'Jabber');
+$basePath = (string) (parse_url(url('/'), PHP_URL_PATH) ?: '');
+$basePath = rtrim($basePath, '/');
 $nav = [
     'home' => ['/','nav.home'],
     'registration' => ['/registration','nav.registration'],
@@ -70,7 +72,8 @@ $nav = [
     'password_strength_2' => $t('hint.password_strength.2'),
     'password_strength_3' => $t('hint.password_strength.3'),
     'password_strength_4' => $t('hint.password_strength.4'),
-], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;</script>
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+window.EAM_BASE_PATH = <?= json_encode($basePath, JSON_UNESCAPED_SLASHES) ?>;</script>
 <script src="<?= e(asset('js/app.js')) ?>" defer></script>
 </body>
 </html>

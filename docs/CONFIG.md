@@ -13,10 +13,24 @@
 | `locales` | Доступные языки. |
 | `timezone` | Часовой пояс PHP, например `UTC` или `Europe/Moscow`. |
 | `secret` | Случайная строка >= 16 символов для HMAC-хешей токенов. Обязательно замените. |
+| `asset_version` | Версия CSS/JS для сброса кеша браузера. Меняйте при обновлении assets. |
 | `session_cookie` | Имя cookie сессии. |
 | `session_secure` | `true`/`false` или `null` (авто по HTTPS). |
 | `session_samesite` | `Lax`, `Strict` или `None`. |
 | `debug` | Показывать текст ошибок на странице 500. В production — `false`. |
+
+Пример генерации `secret`:
+
+```bash
+openssl rand -hex 32
+# или
+php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'
+# или
+head -c 32 /dev/urandom | base64
+```
+
+Минимум — 16 символов, рекомендуется 32 байта (64 hex-символа).
+Не используйте placeholder `CHANGE_ME...`: он специально запрещён.
 
 ## ejabberd
 

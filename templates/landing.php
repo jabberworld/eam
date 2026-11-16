@@ -10,7 +10,7 @@
     <?php if ($hosts !== []): ?>
         <div class="host-chips">
             <?php foreach ($hosts as $host): ?>
-                <span class="host-chip">@<?= e($host) ?></span>
+                <span class="host-chip"><?= e($host) ?></span>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
@@ -54,7 +54,7 @@
     <?php if ($hosts !== []): ?>
         <ul class="host-list">
             <?php foreach ($hosts as $host): ?>
-                <li><code>@<?= e($host) ?></code></li>
+                <li><code><?= e($host) ?></code></li>
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>

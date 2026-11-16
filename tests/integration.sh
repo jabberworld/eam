@@ -103,6 +103,17 @@ status=$(get_page /registration "$TMP/reg.html")
 [ "$status" = "200" ] || fail "registration page status $status"
 csrf1=$(csrf "$TMP/reg.html")
 [ -n "$csrf1" ] || fail "registration csrf token is empty"
+assert_file_contains "$TMP/reg.html" ">test.localhost<" "registration host label without @"
+assert_node "registration has no @-prefixed host label" '
+const fs=require("fs");const s=fs.readFileSync("tests/tmp/reg.html","utf8");
+if(s.includes(">@test.localhost<"))process.exit(1);
+'
+curl -sS --max-time 10 -c "$COOKIES" -b "$COOKIES" -H 'Accept-Language: en' "$BASE_URL/" -o "$TMP/landing.html" >/dev/null
+assert_file_contains "$TMP/landing.html" "test.localhost" "landing shows domain"
+assert_node "landing has no @-prefixed domain" '
+const fs=require("fs");const s=fs.readFileSync("tests/tmp/landing.html","utf8");
+if(s.includes("@test.localhost"))process.exit(1);
+'
 ok "registration form"
 
 # 2. Register
