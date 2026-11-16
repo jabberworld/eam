@@ -154,6 +154,7 @@
 - Integration-тест проверяет домены без `@`.
 - Все тесты (unit 9/9, integration, shared-layout, package-shared, subdir,
   real-smoke) прошли.
+- Коммит: `2100c14 fix: fix captcha reload and host labels`.
 
 ### Известные ограничения
 
