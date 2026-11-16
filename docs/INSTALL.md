@@ -4,8 +4,9 @@
 
 - PHP **8.2+**.
 - Расширения PHP:
-  - обязательные: `curl`, `openssl`, `mbstring`, `dom`, `session`, `json`;
-  - рекомендуется: `sqlite3` (хранилище токенов и rate-limit);
+  - обязательные: `curl`, `openssl`, `dom`, `session`, `json`;
+  - рекомендуется: `mbstring` (bootstrap проверяет его наличие и работает без него),
+    `sqlite3` (хранилище токенов и rate-limit);
   - опционально: `gd` (встроенная графическая капча; без GD используется математическая).
 - `pdo_sqlite` **не требуется**: SQLite работает через `SQLite3`.
 - Веб-сервер с HTTPS (Apache, Nginx, Caddy) или PHP built-in server для разработки.
@@ -46,12 +47,15 @@ config.php       # внешний конфиг, приоритетный
 
 ```bash
 bin/package-shared.sh
+# если сайт в подкаталоге /eam:
+BASE_PATH=/eam bin/package-shared.sh
 ```
 
 Или разложите вручную по `docs/SHARED_HOSTING.md`. Внешний `config.php`
 на уровень выше webroot имеет приоритет над `_app/config/config.php`.
 Для shared-режима обязательны работающий `.htaccess`/`mod_rewrite` и проверка,
-что `/_app/...` отдаёт `403`/`404`.
+что `/_app/...` отдаёт `403`/`404`. Для подкаталога задайте `RewriteBase /eam/`
+и `app.base_url` с тем же путём.
 
 Сгенерируйте `app.secret`:
 
@@ -172,6 +176,7 @@ php bin/cleanup.php
 .testenv/php/php tests/run.php
 tests/integration.sh
 tests/shared-layout.sh
+tests/package-shared.sh
 tests/real-smoke.sh   # требует .testenv/config.real.php
 ```
 
@@ -179,5 +184,7 @@ tests/real-smoke.sh   # требует .testenv/config.real.php
 - `tests/integration.sh` — полный поток с fake ejabberd API и Mailpit.
 - `tests/shared-layout.sh` — shared-раскладка, внешний/внутренний конфиг,
   deny для `_app`, регистрация и активация.
+- `tests/package-shared.sh` — сборка пакета, наличие `.htaccess` и
+  `RewriteBase /eam/`.
 - `tests/real-smoke.sh` — smoke-тест против реального тестового ejabberd;
   создаёт одноразовый `eamtestreal*` и удаляет только его.

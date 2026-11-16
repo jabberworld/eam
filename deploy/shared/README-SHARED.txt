@@ -26,15 +26,22 @@ Quick start:
        EAM_APP_DIR . '/storage/sessions'
   4. Make storage writable:
        chmod -R u+rwX public_html/_app/storage
-  5. Ensure Apache allows .htaccess (AllowOverride FileInfo; Options for -Indexes).
-  6. Verify that private files are blocked:
+  5. Ensure Apache allows .htaccess (AllowOverride FileInfo; Options for -Indexes)
+     and that mod_rewrite is enabled.
+  6. If the site is served from a subdirectory, rebuild with BASE_PATH:
+       BASE_PATH=/eam bin/package-shared.sh
+     or add to public_html/.htaccess after RewriteEngine On:
+       RewriteBase /eam/
+     Set base_url to https://example.com/eam.
+  7. Verify that private files are blocked:
        curl -I https://example.com/_app/config/config.php   # 403/404
        curl -I https://example.com/_app/storage/eam.sqlite  # 403/404
        curl -I https://example.com/_app/src/App.php         # 403/404
        curl -I https://example.com/assets/css/style.css     # 200
        curl -I https://example.com/registration             # 200
 
-If .htaccess is ignored, this layout is not safe. Use the standard layout
-with the document root pointing to public/ instead.
+If .htaccess is ignored or mod_rewrite is disabled, clean URLs and _app
+protection do not work. Use the standard layout with document root = public/
+or fix Apache first.
 
 See docs/SHARED_HOSTING.md for details and Nginx examples.

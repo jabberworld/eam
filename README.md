@@ -38,10 +38,14 @@ bin/             serve, cleanup, package-shared
 
 ```bash
 bin/package-shared.sh
+# если сайт открывается как https://example.com/eam:
+BASE_PATH=/eam bin/package-shared.sh
 ```
 
 Пакет `dist/eam-shared/` содержит front controller, `assets/` и закрытый
-каталог `_app/`. Конфиг можно оставить в `_app/config/config.php` или вынести
+каталог `_app/`. Для подкаталога скрипт добавит `RewriteBase /eam/`; в конфиге
+укажите `base_url => https://example.com/eam`.
+Конфиг можно оставить в `_app/config/config.php` или вынести
 на уровень выше как `config.php` — внешний файл имеет приоритет:
 
 ```text
@@ -67,6 +71,7 @@ php -S 127.0.0.1:8080 -t public public/router.php
 .testenv/php/php tests/run.php            # unit
 tests/integration.sh                      # integration с fake ejabberd + Mailpit
 tests/shared-layout.sh                    # shared-раскладка и конфиг
+tests/package-shared.sh                   # сборка shared-пакета
 ```
 
 ## Документация

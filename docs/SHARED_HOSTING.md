@@ -62,11 +62,14 @@ mv public_html/_app/config/config.php ../config.php
 `public_html/.htaccess`:
 
 ```apache
-Options -Indexes
+Options -Indexes -MultiViews
 DirectoryIndex index.php
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Для установки в подкаталоге раскомментируйте и укажите путь:
+    # RewriteBase /eam/
 
     RewriteRule ^_app(/|$) - [F,L,NC]
     RewriteRule (^|/)\. - [F,L]
@@ -79,12 +82,37 @@ DirectoryIndex index.php
 ```
 
 Нужно, чтобы `AllowOverride` разрешал `FileInfo` (rewrite), а для
-`Options -Indexes` — `Options`. Если провайдер не разрешает `Options`,
-уберите эту строку, но оставьте deny для `_app`.
+`Options -Indexes -MultiViews` — `Options`. Если провайдер не разрешает
+`Options`, уберите эту строку, но оставьте deny для `_app`.
 
 Если `mod_rewrite` недоступен, но доступен `mod_alias`, можно добавить
 `RedirectMatch 403 ^/_app(/|$)`; однако чистые URL всё равно потребуют
 rewrite/try_files.
+
+### Установка в подкаталоге
+
+Если сайт открывается как `https://example.com/eam`, нужно:
+
+1. В `public_html/.htaccess` добавить:
+   ```apache
+   RewriteBase /eam/
+   ```
+   или собрать пакет сразу с базовым путём:
+   ```bash
+   BASE_PATH=/eam bin/package-shared.sh
+   ```
+2. В конфиге указать:
+   ```php
+   'base_url' => 'https://example.com/eam',
+   ```
+   Не `https://example.com` и не `http://localhost`, иначе ссылки и разбор
+   пути будут неверными.
+3. Проверить:
+   ```bash
+   curl -I https://example.com/eam/registration
+   curl -I https://example.com/eam/assets/css/style.css
+   curl -I https://example.com/eam/_app/config/config.php
+   ```
 
 ## Nginx
 
@@ -142,10 +170,52 @@ curl -I https://example.com/_app/src/App.php         # 403/404
 проверьте `AllowOverride`, `mod_rewrite` и расположение `.htaccess`.
 В `_app/config` и `_app/storage` могут быть секреты и пользовательские данные.
 
+## 404 на подразделах
+
+Главная страница работает через `DirectoryIndex`, даже если rewrite выключен.
+Если `/registration` отдаёт **404 Apache** (`Content-Type: text/html; charset=iso-8859-1`,
+нет заголовков приложения), запрос не доходит до `index.php`.
+
+Проверьте по порядку:
+
+1. `mod_rewrite` включён:
+   ```bash
+   apache2ctl -M | grep rewrite
+   ```
+   Если пусто:
+   ```bash
+   sudo a2enmod rewrite
+   sudo systemctl reload apache2
+   ```
+2. `.htaccess` действительно лежит в webroot и читается Apache:
+   ```bash
+   ls -la public_html
+   tail -n 50 /var/log/apache2/error.log
+   ```
+3. `AllowOverride` разрешает `FileInfo` и `Options`.
+4. Для подкаталога задан `RewriteBase /eam/`.
+5. `app.base_url` включает подкаталог: `https://example.com/eam`.
+
+Если после rewrite приходит уже **404 приложения** (стилизованная страница,
+заголовки CSP), значит rewrite работает, но `base_url` не содержит `/eam`
+или приложение установлено не туда, куда указывает URL.
+
 ## Сборка пакета
 
 ```bash
 bin/package-shared.sh
+```
+
+Для установки в подкаталог:
+
+```bash
+BASE_PATH=/eam bin/package-shared.sh
+```
+
+Скрипт добавит в `.htaccess`:
+
+```apache
+RewriteBase /eam/
 ```
 
 Результат:

@@ -37,7 +37,9 @@ final class Bootstrap
         try {
             $config = Config::load($configFile);
             date_default_timezone_set((string) $config->get('app.timezone', 'UTC'));
-            mb_internal_encoding('UTF-8');
+            if (function_exists('mb_internal_encoding')) {
+                mb_internal_encoding('UTF-8');
+            }
 
             $request = Request::fromGlobals($config->basePath());
             (new App($config, $request))->run();

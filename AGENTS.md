@@ -55,6 +55,9 @@ tests/integration.sh
 # shared-раскладка: _app, внешний/внутренний config.php, deny
 tests/shared-layout.sh
 
+# проверка сборки shared-пакета и RewriteBase
+tests/package-shared.sh
+
 # smoke против реального тестового ejabberd (нужен .testenv/config.real.php)
 tests/real-smoke.sh
 

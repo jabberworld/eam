@@ -1,8 +1,11 @@
-Options -Indexes
+Options -Indexes -MultiViews
 DirectoryIndex index.php
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # For a subdirectory install uncomment and set, e.g.:
+    # RewriteBase /eam/
 
     # Private application directory: code, templates, translations, storage, config
     RewriteRule ^_app(/|$) - [F,L,NC]

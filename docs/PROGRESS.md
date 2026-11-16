@@ -96,12 +96,44 @@
 - Shared layout: `tests/shared-layout.sh` — внешний конфиг выигрывает,
   внутренний используется после удаления внешнего, `_app` закрыт, assets
   доступны, storage внутри `_app`, регистрация и активация работают.
+- Package: `tests/package-shared.sh` — сборка пакета, наличие `.htaccess`,
+  deny `_app`, front controller и `RewriteBase /eam/`.
 - Real smoke: `tests/real-smoke.sh` против `ets.jabberworld.info` —
   все шаги прошли; создан и удалён только одноразовый `eamtestreal*`.
 - Встроенная капча: в полном приложении проверены рендер PNG, ошибка при
   неверном коде, новая картинка после ошибки и `/api/captcha`.
 - Первый коммит: `422823d feat: standalone ejabberd account manager`.
 - Shared-хостинг: `3e4f8d3 feat: add shared-hosting layout`.
+
+## 2026-11-16 — shared-hosting fixes
+
+### Диагностика 404
+
+- На тестовом Apache приложение было установлено в `/var/www/html/eam`,
+  `AllowOverride All` и `.htaccess` были на месте, но `mod_rewrite` не был
+  включён. Главная работала через `DirectoryIndex`, подразделы отдавали
+  Apache 404 (`charset=iso-8859-1`, без заголовков приложения).
+- После включения `mod_rewrite` rewrite заработал.
+- Для установки в подкаталоге нужен `RewriteBase /eam/` и `app.base_url`
+  с тем же путём.
+
+### Изменения
+
+- `src/Bootstrap.php` — `mb_internal_encoding()` вызывается только при
+  наличии функции; `mbstring` больше не обязателен.
+- `deploy/shared/.htaccess` — добавлен `Options -MultiViews`, комментарий
+  и шаблон `RewriteBase` для подкаталога.
+- `bin/package-shared.sh` — параметр `BASE_PATH` (например, `/eam`),
+  автоматическая вставка `RewriteBase`; проверка наличия `.htaccess`.
+- `tests/package-shared.sh` — проверка сборки, `.htaccess`, `RewriteBase`.
+- `docs/SHARED_HOSTING.md` — разделы про `mod_rewrite`, `AllowOverride`,
+  `RewriteBase`, `base_url` и 404 на подразделах.
+- `docs/INSTALL.md`, `README.md`, `AGENTS.md` — обновлены требования и команды.
+
+### Проверки
+
+- Unit: 9/9.
+- Integration, shared-layout, package-shared, real-smoke — все прошли.
 
 ### Известные ограничения
 
