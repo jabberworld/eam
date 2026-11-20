@@ -203,3 +203,4 @@
   запускают `server/router.php`, `subdir.sh` проверяет `/eam`,
   `EAM_BASE_PATH` и `/eam/api/captcha`.
 - Проверки: unit 9/9, integration, subdir, real-smoke — все прошли.
+- Коммит: `bb20e5f refactor: make repository root the shared-hosting webroot`.
