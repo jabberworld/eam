@@ -30,7 +30,7 @@ rm -f "$TMP/real-mailpit.db" "$COOKIES"
 
 nohup "$MAILPIT_BIN" --smtp 127.0.0.1:1026 --listen 127.0.0.1:8026 --database "$TMP/real-mailpit.db" --quiet > "$TMP/real-mailpit.log" 2>&1 &
 MAILPIT_PID=$!
-EAM_CONFIG="$CONFIG" nohup "$PHP_BIN" -S 127.0.0.1:8081 -t public public/router.php > "$TMP/real-app.log" 2>&1 &
+EAM_CONFIG="$CONFIG" nohup "$PHP_BIN" -S 127.0.0.1:8081 server/router.php > "$TMP/real-app.log" 2>&1 &
 APP_PID=$!
 
 cleanup() {

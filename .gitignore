@@ -1,7 +1,6 @@
 /.testenv/
-/config/config.php
-/dist/
-/storage/
+/_app/config/config.php
+/_app/storage/
 /vendor/
 /tests/tmp/
 *.log

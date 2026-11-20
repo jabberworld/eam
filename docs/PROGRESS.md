@@ -180,4 +180,26 @@
 - [x] Удаление аккаунта.
 - [x] Тесты.
 - [x] Документация.
-- [x] Shared-хостинг: `_app`, внешний/внутренний `config.php`, упаковка.
+- [x] Shared-хостинг: корневая раскладка `_app` + `server/`.
+
+## 2026-11-20 — реструктуризация под shared-хостинг
+
+- Корень репозитория стал единственным webroot: `index.php`, `.htaccess`,
+  `README.md`, `LICENSE`, `assets/` и приватный `_app/`.
+- Удалены дублирующие раскладки и артефакты: `public/`, `deploy/shared/`,
+  `dist/`, `bin/package-shared.sh`, `tests/package-shared.sh`,
+  `tests/shared-layout.sh`, `tests/shared-config.test.php`,
+  `docs/SHARED_HOSTING.md`.
+- Код и ресурсы перенесены в `_app/`: `src`, `templates`, `lang`, `storage`,
+  `config`. Конфиг: `_app/config/config.php` или внешний `../config.php`.
+- Добавлен `server/` для не-shared запуска: `README.md`, Apache/Nginx
+  примеры, `serve.sh`, `router.php`, `cleanup.php`, `cron.example`.
+- Префикс установки задаётся только через `app.base_url` (например,
+  `https://example.com/eam`); установочные скрипты не используются.
+  `RewriteBase` добавляется вручную только если этого требует Apache.
+- `.htaccess` закрывает `_app`, `server`, `docs`, `tests`, `AGENTS.md`,
+  `CLAUDE.md` и скрытые файлы; `README.md`, `LICENSE`, `assets/` публичны.
+- Тесты переведены на корневую раскладку: `integration.sh` и `real-smoke.sh`
+  запускают `server/router.php`, `subdir.sh` проверяет `/eam`,
+  `EAM_BASE_PATH` и `/eam/api/captcha`.
+- Проверки: unit 9/9, integration, subdir, real-smoke — все прошли.

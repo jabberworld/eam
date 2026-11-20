@@ -1,12 +1,11 @@
 <?php
 /**
  * Пример конфигурации EAM.
- * Скопируйте в config/config.php и заполните секреты.
- * config/config.php исключён из git.
+ * Скопируйте в _app/config/config.php и заполните секреты.
+ * _app/config/config.php исключён из git.
  *
- * Для shared-раскладки этот же файл можно переместить на уровень выше webroot
- * как config.php: пути storage ниже используют EAM_APP_DIR и не зависят
- * от расположения конфига.
+ * Можно вынести этот файл на уровень выше корня проекта как config.php:
+ * пути storage ниже используют EAM_APP_DIR и не зависят от расположения.
  */
 
 $appDir = defined('EAM_APP_DIR') ? EAM_APP_DIR : dirname(__DIR__);
@@ -157,7 +156,7 @@ return [
 
     'logging' => [
         'enabled' => true,
-        'path' => __DIR__ . '/../storage/logs/app.log',
+        'path' => $appDir . '/storage/logs/app.log',
         'level' => 'warning',
     ],
 ];

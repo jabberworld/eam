@@ -26,8 +26,7 @@ final class Bootstrap
         if ($configFile === null) {
             self::fail(
                 "Configuration file not found.\n"
-                . "Place config.php inside _app/config/ or one level above the web root.\n"
-                . "For the standard layout use config/config.php.\n"
+                . "Place config.php inside _app/config/ or one level above the project root.\n"
                 . "Expected candidates:\n- " . implode("\n- ", $configCandidates),
                 500
             );

@@ -1,201 +1,184 @@
-# Установка EAM
+# Установка на shared-хостинг
+
+Корень проекта — это webroot. Отдельного каталога `public/` нет.
 
 ## Требования
 
 - PHP **8.2+**.
-- Расширения PHP:
+- Расширения:
   - обязательные: `curl`, `openssl`, `dom`, `session`, `json`;
-  - рекомендуется: `mbstring` (bootstrap проверяет его наличие и работает без него),
-    `sqlite3` (хранилище токенов и rate-limit);
-  - опционально: `gd` (встроенная графическая капча; без GD используется математическая).
-- `pdo_sqlite` **не требуется**: SQLite работает через `SQLite3`.
-- Веб-сервер с HTTPS (Apache, Nginx, Caddy) или PHP built-in server для разработки.
-- ejabberd **>= 24.06** с `mod_http_api`, `mod_private`, `mod_admin_extra`
-  (см. `docs/EJABBERD.md`).
-- SMTP-сервер или настроенный `mail()`.
+  - рекомендуемые: `mbstring`, `sqlite3`, `gd`.
+- Apache с `mod_rewrite` и работающим `.htaccess` (или Nginx с `try_files`).
+- HTTPS.
+- ejabberd >= 24.06 с `mod_http_api`, `mod_private`, `mod_admin_extra`.
+- SMTP или настроенный `mail()`.
 
-## Развёртывание
-
-### Стандартный режим
-
-Document root указывает на каталог `public/`.
-
-```bash
-git clone <repo> eam
-cd eam
-cp config/config.example.php config/config.php
-# отредактируйте config/config.php
-chmod -R u+rwX storage
-```
-
-### Shared-хостинг (`public_html`)
-
-Если домен смотрит на `public_html` и менять document root неудобно,
-используйте `_app`-раскладку:
+## Раскладка
 
 ```text
-public_html/
+/
   index.php
   .htaccess
+  README.md
+  LICENSE
   assets/
-  _app/          # закрыт .htaccess
-    src/ templates/ lang/ storage/ config/
-config.php       # внешний конфиг, приоритетный
+  _app/
+    src/
+    templates/
+    lang/
+    storage/
+    config/
+      config.example.php
+      config.php
+  server/
+  docs/
+  tests/
 ```
 
-Соберите пакет:
+`_app`, `server`, `docs`, `tests`, `AGENTS.md`, `CLAUDE.md` и скрытые файлы
+закрываются `.htaccess`/Nginx. Публичны `index.php`, `assets/`, `README.md`,
+`LICENSE`.
 
-```bash
-bin/package-shared.sh
-# если сайт в подкаталоге /eam:
-BASE_PATH=/eam bin/package-shared.sh
-```
+## Установка
 
-Или разложите вручную по `docs/SHARED_HOSTING.md`. Внешний `config.php`
-на уровень выше webroot имеет приоритет над `_app/config/config.php`.
-Для shared-режима обязательны работающий `.htaccess`/`mod_rewrite` и проверка,
-что `/_app/...` отдаёт `403`/`404`. Для подкаталога задайте `RewriteBase /eam/`
-и `app.base_url` с тем же путём.
+1. Загрузите содержимое проекта в webroot (или в подкаталог).
 
-Сгенерируйте `app.secret` (любой вариант):
+2. Создайте конфиг:
 
-```bash
-openssl rand -hex 32
-# или
-php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'
-# или
-head -c 32 /dev/urandom | base64
-```
+   ```bash
+   cp _app/config/config.example.php _app/config/config.php
+   ```
 
-Минимум — 16 символов, рекомендуется 32 байта (64 hex-символа).
-`config/config.php` содержит секреты и исключён из git.
+   Или вынесите его на уровень выше корня проекта как `config.php`.
+   Внешний файл имеет приоритет:
 
-При обновлении CSS/JS увеличивайте `app.asset_version` в конфиге, чтобы
-браузер пользователя не использовал старую версию assets.
+   ```text
+   EAM_CONFIG → ../config.php → _app/config/config.php
+   ```
 
-## Apache
+3. Заполните `base_url`, ejabberd, SMTP и домены.
 
-DocumentRoot: `/path/to/eam/public`. В `public/.htaccess` уже есть правила
-rewrite. Убедитесь, что `mod_rewrite` включён и `AllowOverride` разрешает
-`.htaccess`.
+   Для корня домена:
+
+   ```php
+   'base_url' => 'https://example.com',
+   ```
+
+   Для подкаталога:
+
+   ```php
+   'base_url' => 'https://example.com/eam',
+   ```
+
+4. Сгенерируйте `app.secret`:
+
+   ```bash
+   openssl rand -hex 32
+   # или
+   php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'
+   # или
+   head -c 32 /dev/urandom | base64
+   ```
+
+   Минимум 16 символов, рекомендуется 32 байта.
+
+5. Выдайте права на storage:
+
+   ```bash
+   mkdir -p _app/storage/sessions _app/storage/data _app/storage/logs
+   chmod -R u+rwX _app/storage
+   ```
+
+6. Проверьте Apache:
+
+   ```bash
+   apache2ctl -M | grep rewrite
+   ```
+
+   Если пусто:
+
+   ```bash
+   sudo a2enmod rewrite
+   sudo systemctl reload apache2
+   ```
+
+   `AllowOverride` должен разрешать `FileInfo` и `Options`.
+
+7. Для подкаталога при необходимости добавьте в `.htaccess`:
+
+   ```apache
+   RewriteBase /eam/
+   ```
+
+8. Проверьте:
+
+   ```bash
+   curl -I https://example.com/registration             # 200
+   curl -I https://example.com/assets/css/style.css     # 200
+   curl -I https://example.com/_app/config/config.php   # 403/404
+   curl -I https://example.com/_app/storage/eam.sqlite  # 403/404
+   curl -I https://example.com/server/README.md         # 403/404
+   curl -I https://example.com/docs/INSTALL.md          # 403/404
+   curl -I https://example.com/tests/config.test.php    # 403/404
+   ```
+
+Если `_app` отдаёт `200`, немедленно закройте доступ: проверьте
+`AllowOverride`, `mod_rewrite` и расположение `.htaccess`.
 
 ## Nginx
 
+Для Nginx используйте `server/nginx.conf.example` как основу. Ключевые
+моменты:
+
 ```nginx
-server {
-    listen 443 ssl http2;
-    server_name accounts.example.com;
-    root /path/to/eam/public;
-    index index.php;
+root /path/to/eam;
+index index.php;
 
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        include fastcgi_params;
-        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    }
-
-    location ~ /\.(?!well-known) {
-        deny all;
-    }
-}
+location ~ ^/(_app|server|tests|docs)/ { deny all; }
+location ~ /\.(?!well-known) { deny all; }
+location / { try_files $uri $uri/ /index.php?$query_string; }
 ```
 
-Не отдавайте наружу `config/`, `storage/`, `tests/`, `.testenv/`.
+Для подкаталога:
 
-## Права
-
-PHP-процесс должен иметь право записи в:
-
-- `storage/sessions/` — сессии;
-- `storage/` или путь из `storage.sqlite_path` — SQLite;
-- `storage/data/` — файловый fallback;
-- `storage/logs/` — логи.
-
-Пример:
-
-```bash
-mkdir -p storage/sessions storage/data storage/logs
-chown -R www-data:www-data storage
-chmod -R 750 storage
+```nginx
+location /eam/ { try_files $uri $uri/ /eam/index.php?$query_string; }
 ```
 
-Для shared-режима каталог называется `public_html/_app/storage/`:
+## Конфиг
 
-## Проверка конфигурации
+- Шаблон: `_app/config/config.example.php`.
+- Внутренний конфиг: `_app/config/config.php` (gitignored).
+- Внешний: `../config.php`.
+- `EAM_CONFIG` — абсолютный путь, высший приоритет.
 
-```bash
-php -l public/index.php
-php -l config/config.php
-php bin/cleanup.php      # проверка доступа к storage
-```
+Storage-пути используют `EAM_APP_DIR`, поэтому конфиг можно перемещать.
+Подробно: `docs/CONFIG.md`.
 
-Откройте `/health` — должен вернуться JSON `{"status":"ok", ...}`.
+## Обновление
 
-## Разработка
+1. Сохраните конфиг и `_app/storage/`.
+2. Замените `index.php`, `.htaccess`, `assets/`, `_app/src/`,
+   `_app/templates/`, `_app/lang/`, `_app/config/config.example.php`.
+3. Проверьте `/health` и разделы сайта.
+4. Увеличьте `app.asset_version`, чтобы сбросить кеш CSS/JS.
 
-```bash
-PHP_BIN=php bin/serve.sh
-# или
-php -S 127.0.0.1:8080 -t public public/router.php
-```
+## Не-shared хостинг
 
-Для тестовой почты:
-
-```bash
-.testenv/mailpit/mailpit --smtp 127.0.0.1:1025 --listen 127.0.0.1:8025
-```
-
-В `config/config.php`:
-
-```php
-'mail' => [
-    'transport' => 'smtp',
-    'smtp' => ['host' => '127.0.0.1', 'port' => 1025, 'encryption' => 'none'],
-],
-```
-
-## Очистка истёкших токенов
-
-Просроченные токены и rate-limit записи удаляются автоматически с небольшой
-вероятностью при обработке запросов. Для гарантированной очистки добавьте cron:
-
-```cron
-*/15 * * * * cd /path/to/eam && EAM_CONFIG=/path/to/eam/config/config.php php bin/cleanup.php >/dev/null 2>&1
-```
-
-Для shared-раскладки `bin/cleanup.php` лежит вне пакета; очистка также
-выполняется probabilistically при обычных запросах. При необходимости
-запускайте cleanup из полного репозитория, указав внешний конфиг и каталог
-приложения:
-
-```bash
-EAM_CONFIG=/home/user/config.php \
-EAM_APP_DIR=/home/user/public_html/_app \
-php bin/cleanup.php
-```
+DocumentRoot, Apache/Nginx vhost, PHP-FPM, cron и dev-сервер описаны в
+`server/README.md`. Отдельной раскладки с `public/` больше нет: document root
+всегда указывает на корень проекта.
 
 ## Тесты
 
 ```bash
 .testenv/php/php tests/run.php
 tests/integration.sh
-tests/shared-layout.sh
-tests/package-shared.sh
 tests/subdir.sh
 tests/real-smoke.sh   # требует .testenv/config.real.php
 ```
 
-- `tests/run.php` — unit-тесты.
-- `tests/integration.sh` — полный поток с fake ejabberd API и Mailpit.
-- `tests/shared-layout.sh` — shared-раскладка, внешний/внутренний конфиг,
-  deny для `_app`, регистрация и активация.
-- `tests/package-shared.sh` — сборка пакета, наличие `.htaccess` и
-  `RewriteBase /eam/`.
-- `tests/subdir.sh` — установка в `/eam`, `EAM_BASE_PATH`, `/eam/api/captcha`,
-  assets и deny `_app`.
-- `tests/real-smoke.sh` — smoke-тест против реального тестового ejabberd;
-  создаёт одноразовый `eamtestreal*` и удаляет только его.
+- `tests/run.php` — unit.
+- `tests/integration.sh` — fake ejabberd + Mailpit, полный цикл.
+- `tests/subdir.sh` — установка в `/eam`, `EAM_BASE_PATH`, `/eam/api/captcha`.
+- `tests/real-smoke.sh` — smoke против реального ejabberd.

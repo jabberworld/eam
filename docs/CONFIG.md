@@ -1,14 +1,14 @@
 # Конфигурация EAM
 
-Все настройки находятся в `config/config.php` (не коммитится).
-Шаблон — `config/config.example.php`.
+Все настройки находятся в `_app/config/config.php` (не коммитится)
+или во внешнем `../config.php`. Шаблон — `_app/config/config.example.php`.
 
 ## app
 
 | Ключ | Назначение |
 |---|---|
 | `name` | Название сайта в шапке и письмах. |
-| `base_url` | Полный внешний URL без завершающего `/`. Используется в ссылках писем. |
+| `base_url` | Полный внешний URL без завершающего `/`, включая префикс (`https://example.com/eam`). Используется в ссылках, формах и AJAX. |
 | `default_locale` | Язык по умолчанию: `en`, `ru`, `uk`, `pl`. |
 | `locales` | Доступные языки. |
 | `timezone` | Часовой пояс PHP, например `UTC` или `Europe/Moscow`. |
@@ -179,13 +179,11 @@ head -c 32 /dev/urandom | base64
 Приоритет:
 
 1. `EAM_CONFIG` — абсолютный путь;
-2. `../config.php` — внешний файл на уровень выше webroot (shared-режим);
-3. `_app/config/config.php` — внутренний файл;
-4. `config/config.php` — стандартная раскладка с document root `public/`.
+2. `../config.php` — внешний файл на уровень выше корня проекта;
+3. `_app/config/config.php` — внутренний файл.
 
-Для shared-режима внешний файл выигрывает, поэтому внутренний можно просто
-переместить на уровень выше без переименования. Подробнее:
-`docs/SHARED_HOSTING.md`.
+Внешний файл выигрывает, поэтому внутренний можно просто переместить на
+уровень выше без переименования. Пути storage используют `EAM_APP_DIR`.
 
 ## logging
 
@@ -200,5 +198,5 @@ head -c 32 /dev/urandom | base64
 ## Пример запуска с другим конфигом
 
 ```bash
-EAM_CONFIG=/path/to/config.php php -S 127.0.0.1:8080 -t public public/router.php
+EAM_CONFIG=/path/to/config.php php -S 127.0.0.1:8080 server/router.php
 ```

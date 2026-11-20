@@ -1,0 +1,26 @@
+# Apache vhost example for EAM
+# Adapt paths, ServerName, certificates.
+#
+# DocumentRoot is the project root (the directory containing index.php and _app/).
+
+<VirtualHost *:443>
+    ServerName accounts.example.com
+    DocumentRoot /path/to/eam
+
+    <Directory /path/to/eam>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/eam-error.log
+    CustomLog ${APACHE_LOG_DIR}/eam-access.log combined
+
+    # SSLEngine on
+    # SSLCertificateFile /etc/letsencrypt/live/accounts.example.com/fullchain.pem
+    # SSLCertificateKeyFile /etc/letsencrypt/live/accounts.example.com/privkey.pem
+</VirtualHost>
+
+# If the project is served from /eam inside another document root, add to
+# .htaccess:
+#     RewriteBase /eam/
+# and set app.base_url to https://example.com/eam

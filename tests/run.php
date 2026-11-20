@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/../src/autoload.php';
+require __DIR__ . '/../_app/src/autoload.php';
 
 use Eam\Bootstrap;
 use Eam\Captcha\BuiltinCaptcha;
@@ -124,18 +124,18 @@ test('validator email and password', function () use ($config, $base, $logger): 
 });
 
 test('translator and fallback', function (): void {
-    $translator = new Translator(__DIR__ . '/../lang', 'ru', ['en', 'ru', 'uk', 'pl']);
+    $translator = new Translator(__DIR__ . '/../_app/lang', 'ru', ['en', 'ru', 'uk', 'pl']);
     assertSame('Главная', $translator->get('nav.home'));
     assertSame('missing.key', $translator->get('missing.key'));
     $text = $translator->get('confirm.change_email.text', [':jid' => 'a@b', ':email' => 'c@d']);
     assertContains('a@b', $text);
     assertContains('c@d', $text);
-    $en = new Translator(__DIR__ . '/../lang', 'en', ['en', 'ru']);
+    $en = new Translator(__DIR__ . '/../_app/lang', 'en', ['en', 'ru']);
     assertSame('Registration', $en->get('nav.registration'));
 });
 
 test('builtin and math captcha', function () use ($config, $session): void {
-    $translator = new Translator(__DIR__ . '/../lang', 'en', ['en', 'ru']);
+    $translator = new Translator(__DIR__ . '/../_app/lang', 'en', ['en', 'ru']);
 
     $captcha = new BuiltinCaptcha($config, $session, $translator);
     $html = $captcha->render();

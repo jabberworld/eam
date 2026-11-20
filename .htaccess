@@ -1,0 +1,25 @@
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Для установки в подкаталоге раскомментируйте и укажите путь:
+    # RewriteBase /eam/
+
+    # Приватные каталоги
+    RewriteRule ^(_app|server|tests|docs)(/|$) - [F,L,NC]
+    RewriteRule ^(AGENTS\.md|CLAUDE\.md)$ - [F,L,NC]
+
+    # Скрытые файлы, кроме ACME/.well-known
+    RewriteCond %{REQUEST_URI} !/\.well-known/
+    RewriteRule (^|/)\. - [F,L]
+
+    # Данные и резервные копии
+    RewriteRule \.(sqlite|db|log|bak|old|zip|tar|gz|env)$ - [F,L,NC]
+
+    # Front controller
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>

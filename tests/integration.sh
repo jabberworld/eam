@@ -23,7 +23,7 @@ nohup "$PHP_BIN" -S 127.0.0.1:7283 tests/fake-ejabberd.php > "$TMP/fake.log" 2>&
 FAKE_PID=$!
 nohup "$MAILPIT_BIN" --smtp 127.0.0.1:1025 --listen 127.0.0.1:8025 --database "$TMP/mailpit.db" --quiet > "$TMP/mailpit.log" 2>&1 &
 MAILPIT_PID=$!
-EAM_CONFIG="$PWD/tests/config.test.php" nohup "$PHP_BIN" -S 127.0.0.1:8080 -t public public/router.php > "$TMP/app.log" 2>&1 &
+EAM_CONFIG="$PWD/tests/config.test.php" nohup "$PHP_BIN" -S 127.0.0.1:8080 server/router.php > "$TMP/app.log" 2>&1 &
 APP_PID=$!
 
 cleanup() {
@@ -50,6 +50,17 @@ wait_for "$BASE_URL/health"
 
 ok() { echo "[ok] $1"; }
 fail() { echo "[FAIL] $1" >&2; echo "--- app.log ---" >&2; tail -30 "$TMP/app.log" >&2 || true; exit 1; }
+
+http_status() {
+    curl -sS -o /dev/null --max-time 5 -w '%{http_code}' "$BASE_URL$1"
+}
+[ "$(http_status /)" = "200" ] || fail "landing page status"
+[ "$(http_status /assets/css/style.css)" = "200" ] || fail "assets status"
+[ "$(http_status /_app/config/config.example.php)" = "403" ] || fail "_app is not denied"
+[ "$(http_status /server/README.md)" = "403" ] || fail "server dir is not denied"
+[ "$(http_status /docs/INSTALL.md)" = "403" ] || fail "docs dir is not denied"
+[ "$(http_status /tests/config.test.php)" = "403" ] || fail "tests dir is not denied"
+ok "private directories are denied"
 
 assert_file_contains() {
     local file="$1" needle="$2" label="$3"

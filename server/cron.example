@@ -1,0 +1,7 @@
+# EAM storage cleanup
+# Adjust path and run as the web-server user if needed.
+
+*/15 * * * * cd /path/to/eam && php server/cleanup.php >/dev/null 2>&1
+
+# External config:
+# */15 * * * * cd /path/to/eam && EAM_CONFIG=/path/to/config.php php server/cleanup.php >/dev/null 2>&1

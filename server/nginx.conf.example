@@ -1,0 +1,40 @@
+# Nginx example for EAM
+# Adapt paths, server_name, certificates and PHP-FPM socket.
+
+server {
+    listen 443 ssl http2;
+    server_name accounts.example.com;
+    root /path/to/eam;
+    index index.php;
+
+    # ssl_certificate     /etc/letsencrypt/live/accounts.example.com/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/accounts.example.com/privkey.pem;
+
+    location ~ ^/(_app|server|tests|docs)(/|$) {
+        deny all;
+    }
+
+    location ~ ^/(AGENTS\.md|CLAUDE\.md)$ {
+        deny all;
+    }
+
+    location ~ /\.(?!well-known) {
+        deny all;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
+
+# For /eam:
+#   root /path/to;  (parent)
+#   location /eam/ { try_files $uri $uri/ /eam/index.php?$query_string; }
+#   app.base_url = https://example.com/eam
+#   .htaccess: RewriteBase /eam/ (if Apache is used for that part)

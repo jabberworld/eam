@@ -85,7 +85,7 @@ api_permissions:
 
 ## Basic Auth
 
-В `config/config.php`:
+В `_app/config/config.php` (или внешнем `../config.php`):
 
 ```php
 'ejabberd' => [
@@ -160,5 +160,5 @@ curl -u "$AUTH" -H 'Content-Type: application/json' -d '{"user":"test","host":"e
 - Используйте HTTPS для API и для сайта.
 - Не используйте основного администратора ejabberd; создайте отдельного бота.
 - Ограничьте `api_permissions` только перечисленными командами.
-- Не публикуйте `config/config.php`.
+- Не публикуйте `_app/config/config.php`; внешний `../config.php` держите вне webroot.
 - Не логируйте пароли и OAuth-токены.
