@@ -5,3 +5,7 @@
 /tests/tmp/
 *.log
 .phpunit.result.cache
+/.brain/
+/.cursor/
+/.windsurfrules
+/CLAUDE.md

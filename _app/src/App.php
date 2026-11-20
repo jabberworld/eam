@@ -78,6 +78,10 @@ final class App
     {
         $this->logger = Logger::fromConfig($this->config);
         $locale = Translator::negotiate($this->request, $this->config);
+        $queryLocale = (string) $this->request->query('lang', '');
+        if ($queryLocale !== '' && in_array($queryLocale, (array) $this->config->get('app.locales', []), true)) {
+            $this->setLocaleCookie($queryLocale);
+        }
         $this->translator = new Translator(
             dirname(__DIR__) . '/lang',
             $locale,
@@ -515,14 +519,19 @@ final class App
         if ($return === '' || !str_starts_with($return, '/') || str_starts_with($return, '//') || str_contains($return, '\\')) {
             $return = '/';
         }
-        setcookie('eam_lang', $to, [
+        $this->setLocaleCookie($to);
+        return Response::redirect(url($return));
+    }
+
+    private function setLocaleCookie(string $locale): void
+    {
+        setcookie('eam_lang', $locale, [
             'expires' => time() + 31536000,
             'path' => '/',
-            'secure' => $request->isSecure(),
+            'secure' => $this->request->isSecure(),
             'httponly' => true,
             'samesite' => 'Lax',
         ]);
-        return Response::redirect(url($return));
     }
 
     private function apiCheckUsername(Request $request): Response

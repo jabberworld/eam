@@ -204,3 +204,14 @@
   `EAM_BASE_PATH` и `/eam/api/captcha`.
 - Проверки: unit 9/9, integration, subdir, real-smoke — все прошли.
 - Коммит: `bb20e5f refactor: make repository root the shared-hosting webroot`.
+
+## 2026-11-20 — письма и язык
+
+- Из `_app/templates/emails/layout.php` убран заголовок с названием сайта:
+  тело письма сразу начинается с приветствия. Название сайта осталось
+  в футере и в имени отправителя (`mail.from_name`).
+- `?lang=xx` теперь сохраняется в cookie `eam_lang`, поэтому язык формы
+  не откатывается при POST без query-параметра.
+- Integration-тест проверяет, что письмо начинается с `Hello,` и что название
+  сайта встречается в теле один раз; также проверяется сохранение `?lang`.
+- Unit 9/9, integration, subdir, real-smoke — все прошли.

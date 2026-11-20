@@ -102,6 +102,15 @@ latest_mail_link() {
     curl -sS "$MAILPIT_URL/api/v1/message/$id" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);const t=(j.HTML||"")+"\n"+(j.Text||"");const m=t.match(/https?:\/\/[^"<\s]+code=[a-f0-9]+/);process.stdout.write(m?m[0]:"")})'
 }
 
+latest_mail_html() {
+    local id
+    id=$(latest_mail_id)
+    if [ -z "$id" ]; then
+        return 1
+    fi
+    curl -sS "$MAILPIT_URL/api/v1/message/$id" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);process.stdout.write(j.HTML||j.Text||"")})'
+}
+
 get_page() {
     local path="$1" file="$2"
     curl -sS --max-time 10 -c "$COOKIES" -b "$COOKIES" -H 'Accept-Language: en' "$BASE_URL$path" -o "$file" -w '%{http_code}'
@@ -142,6 +151,19 @@ const fs=require("fs");const j=JSON.parse(fs.readFileSync("tests/tmp/fake-ejabbe
 const u=j.users["eamtest_integration"];if(!u)process.exit(1);
 if(u.email!=="test@example.com")process.exit(1);
 if(!u.banned||u.banned.reason!=="Activation required")process.exit(1);
+'
+latest_mail_html > "$TMP/reg-email.html"
+assert_node "registration email starts with greeting" '
+const fs=require("fs");const html=fs.readFileSync("tests/tmp/reg-email.html","utf8");
+const body=(html.match(/<body[^>]*>([\s\S]*?)<\/body>/i)||[])[1]||html;
+const text=body.replace(/<[^>]+>/g," ").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim();
+if(!text.startsWith("Hello,"))process.exit(1);
+'
+assert_node "site name appears once in email body" '
+const fs=require("fs");const html=fs.readFileSync("tests/tmp/reg-email.html","utf8");
+const body=(html.match(/<body[^>]*>([\s\S]*?)<\/body>/i)||[])[1]||html;
+const text=body.replace(/<[^>]+>/g," ").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim();
+if((text.match(/EAM Test/g)||[]).length!==1)process.exit(1);
 '
 link=$(latest_mail_link)
 [ -n "$link" ] || fail "activation link not found in email"
@@ -273,6 +295,9 @@ curl -sS --max-time 10 -H 'Accept-Language: en' -d 'username=eamtest_available&h
 assert_file_contains "$TMP/username_ok.json" '"status":"success"' "username API reports available name"
 
 # 11. Language switch
+curl -sS -D "$TMP/lang-headers.txt" -o /dev/null --max-time 10 "$BASE_URL/registration?lang=ru"
+grep -qi '^Set-Cookie: eam_lang=ru' "$TMP/lang-headers.txt" || fail "?lang is not persisted"
+ok "?lang is persisted in cookie"
 curl -sS -L --max-time 10 -c "$COOKIES" -b "$COOKIES" "$BASE_URL/language?to=ru&return=%2Fregistration" -o "$TMP/lang_ru.html" >/dev/null
 assert_file_contains "$TMP/lang_ru.html" '<html lang="ru">' "language switch to Russian"
 assert_file_contains "$TMP/lang_ru.html" "Регистрация" "Russian translation rendered"
