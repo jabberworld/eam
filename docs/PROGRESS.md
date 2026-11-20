@@ -215,3 +215,4 @@
 - Integration-тест проверяет, что письмо начинается с `Hello,` и что название
   сайта встречается в теле один раз; также проверяется сохранение `?lang`.
 - Unit 9/9, integration, subdir, real-smoke — все прошли.
+- Коммит: `72aa2c3 fix: start emails with greeting and persist ?lang`.
