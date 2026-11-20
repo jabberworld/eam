@@ -231,3 +231,4 @@
 - Из `_app/lang/*.php` удалены блоки `landing`, `footer`, `site`.
 - Добавлен `docs/CONTENT.md`; обновлены README, INSTALL и CONFIG.
 - Тесты: unit 10/10, integration (контент и fallback), subdir, real-smoke.
+- Коммит: `d83ea21 feat: add editable content files for landing and footer`.
