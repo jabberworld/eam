@@ -1,0 +1,49 @@
+<section class="hero">
+    <p class="eyebrow">Jabber / XMPP</p>
+    <h1>Welcome!</h1>
+    <p class="lead">This site lets you register a Jabber account and manage it: change your private email, reset your password or delete your account. All sensitive actions are confirmed by email.</p>
+    <div class="host-chips">{{hosts_chips}}</div>
+</section>
+
+<section class="section">
+    <h2>Account management</h2>
+    <div class="action-grid">
+        <a class="action-card primary" href="{{url_registration}}">
+            <span class="action-title">Registration</span>
+            <span class="action-text">Create a new Jabber account with email confirmation.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="action-card" href="{{url_change_email}}">
+            <span class="action-title">Change email</span>
+            <span class="action-text">Change or add the private email address for your account.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="action-card" href="{{url_reset_password}}">
+            <span class="action-title">Reset password</span>
+            <span class="action-text">Receive a one-time link to set a new password.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="action-card" href="{{url_delete_account}}">
+            <span class="action-title">Delete account</span>
+            <span class="action-text">Permanently delete your Jabber account after email confirmation.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+    </div>
+</section>
+
+<section class="section">
+    <h2>What you can do</h2>
+    <ul class="feature-list">
+        <li>Two-step registration with an activation link</li>
+        <li>Private email changes confirmed by email</li>
+        <li>Password reset with attempt limits</li>
+        <li>Account deletion with password confirmation</li>
+        <li>Interface in English, Russian, Ukrainian and Polish</li>
+    </ul>
+</section>
+
+<section class="section prose">
+    <h2>Available domains</h2>
+    <p>You can create an account on one of these domains:</p>
+    <ul class="host-list">{{hosts_list}}</ul>
+</section>

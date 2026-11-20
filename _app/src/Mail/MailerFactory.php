@@ -11,7 +11,10 @@ final class MailerFactory
     public static function create(Config $config): MailerInterface
     {
         $fromEmail = (string) $config->get('mail.from_email');
-        $fromName = (string) $config->get('mail.from_name', '');
+        $fromName = trim((string) $config->get('mail.from_name', ''));
+        if ($fromName === '') {
+            $fromName = (string) $config->get('app.name', '');
+        }
         $transport = (string) $config->get('mail.transport', 'smtp');
         if ($transport === 'mail') {
             return new NativeMailer($fromEmail, $fromName);

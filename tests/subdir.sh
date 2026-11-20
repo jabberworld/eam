@@ -11,7 +11,7 @@ BASE_URL="http://127.0.0.1:8084/eam"
 
 rm -rf "$TMP"
 mkdir -p "$APP/_app/config" "$APP/_app/storage/sessions" "$APP/_app/storage/data" "$APP/_app/storage/logs"
-cp -R _app/src _app/templates _app/lang "$APP/_app/"
+cp -R _app/src _app/templates _app/lang _app/content "$APP/_app/"
 cp -R assets "$APP/assets"
 cp index.php "$APP/index.php"
 cp .htaccess "$APP/.htaccess"

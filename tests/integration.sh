@@ -111,6 +111,15 @@ latest_mail_html() {
     curl -sS "$MAILPIT_URL/api/v1/message/$id" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);process.stdout.write(j.HTML||j.Text||"")})'
 }
 
+latest_mail_from_name() {
+    local id
+    id=$(latest_mail_id)
+    if [ -z "$id" ]; then
+        return 1
+    fi
+    curl -sS "$MAILPIT_URL/api/v1/message/$id" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);process.stdout.write((j.From&&j.From.Name)||"")})'
+}
+
 get_page() {
     local path="$1" file="$2"
     curl -sS --max-time 10 -c "$COOKIES" -b "$COOKIES" -H 'Accept-Language: en' "$BASE_URL$path" -o "$file" -w '%{http_code}'
@@ -134,6 +143,9 @@ assert_node "landing has no @-prefixed domain" '
 const fs=require("fs");const s=fs.readFileSync("tests/tmp/landing.html","utf8");
 if(s.includes("@test.localhost"))process.exit(1);
 '
+assert_file_contains "$TMP/landing.html" "<title>EAM Test</title>" "home title is not duplicated"
+assert_file_contains "$TMP/landing.html" "Welcome!" "landing body comes from content file"
+assert_file_contains "$TMP/landing.html" "Account management for EAM Test." "footer comes from content file"
 ok "registration form"
 
 # 2. Register
@@ -165,6 +177,8 @@ const body=(html.match(/<body[^>]*>([\s\S]*?)<\/body>/i)||[])[1]||html;
 const text=body.replace(/<[^>]+>/g," ").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim();
 if((text.match(/EAM Test/g)||[]).length!==1)process.exit(1);
 '
+[ "$(latest_mail_from_name)" = "EAM Test" ] || fail "mail.from_name fallback to app.name"
+ok "mail.from_name falls back to app.name"
 link=$(latest_mail_link)
 [ -n "$link" ] || fail "activation link not found in email"
 ok "activation email link extracted"
@@ -301,6 +315,9 @@ ok "?lang is persisted in cookie"
 curl -sS -L --max-time 10 -c "$COOKIES" -b "$COOKIES" "$BASE_URL/language?to=ru&return=%2Fregistration" -o "$TMP/lang_ru.html" >/dev/null
 assert_file_contains "$TMP/lang_ru.html" '<html lang="ru">' "language switch to Russian"
 assert_file_contains "$TMP/lang_ru.html" "Регистрация" "Russian translation rendered"
+curl -sS --max-time 10 -c "$COOKIES" -b "$COOKIES" "$BASE_URL/" -o "$TMP/landing_ru.html" >/dev/null
+assert_file_contains "$TMP/landing_ru.html" "Добро пожаловать!" "Russian landing content file"
+assert_file_contains "$TMP/landing_ru.html" "Управление аккаунтом для EAM Test." "Russian footer content file"
 
 echo
 echo "Integration tests passed."

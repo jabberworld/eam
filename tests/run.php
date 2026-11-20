@@ -14,6 +14,7 @@ use Eam\Http\Session;
 use Eam\I18n\Translator;
 use Eam\Storage\FileStorage;
 use Eam\Storage\SqliteStorage;
+use Eam\Support\Content;
 use Eam\Support\Logger;
 use Eam\Support\PasswordStrength;
 use Eam\Validation\DisposableEmailChecker;
@@ -164,6 +165,32 @@ test('router dispatch and 404', function (): void {
     $missing = $router->dispatch(new Request('GET', '/nope', [], [], [], [], [], []));
     assertSame(404, $missing->status());
     assertSame('missing', $missing->body());
+});
+
+test('content files and fallback', function () use ($config, $logger, $base): void {
+    $dir = $base . '/content';
+    rrmdir($dir);
+    mkdir($dir . '/landing', 0770, true);
+    mkdir($dir . '/footer', 0770, true);
+    file_put_contents($dir . '/landing/ru.html', '<p>{{site_name}}</p><div>{{hosts_chips}}</div><ul>{{hosts_list}}</ul><a href="{{url_registration}}">reg</a><span>{{year}}</span>');
+    file_put_contents($dir . '/landing/en.html', '<p>EN-FALLBACK {{site_name}}</p>');
+    file_put_contents($dir . '/footer/ru.html', '<p>footer {{site_name}}</p>');
+
+    $content = new Content($dir, $config, $logger);
+    $ru = $content->landing('ru');
+    assertContains('EAM Test', $ru);
+    assertContains('host-chip', $ru);
+    assertContains('test.localhost', $ru);
+    assertContains('http://127.0.0.1:8080/registration', $ru);
+    assertContains(date('Y'), $ru);
+    assertTrue(!str_contains($ru, '{{'), 'placeholders must be replaced');
+    assertContains('EN-FALLBACK', $content->landing('uk'));
+    assertContains('footer EAM Test', $content->footer('ru'));
+
+    mkdir($dir . '/empty', 0770, true);
+    $empty = new Content($dir . '/empty', $config, $logger);
+    assertSame('', $empty->landing('ru'));
+    assertSame('', $empty->footer('ru'));
 });
 
 test('bootstrap config resolution', function () use ($base): void {

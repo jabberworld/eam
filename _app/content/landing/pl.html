@@ -1,0 +1,49 @@
+<section class="hero">
+    <p class="eyebrow">Jabber / XMPP</p>
+    <h1>Witaj!</h1>
+    <p class="lead">Ta strona służy do rejestracji konta Jabber i zarządzania nim: możesz zmienić prywatny email, zresetować hasło lub usunąć konto. Wszystkie ważne działania są potwierdzane e-mailem.</p>
+    <div class="host-chips">{{hosts_chips}}</div>
+</section>
+
+<section class="section">
+    <h2>Zarządzanie kontem</h2>
+    <div class="action-grid">
+        <a class="action-card primary" href="{{url_registration}}">
+            <span class="action-title">Rejestracja</span>
+            <span class="action-text">Utwórz nowe konto Jabber z potwierdzeniem e-mail.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="action-card" href="{{url_change_email}}">
+            <span class="action-title">Zmień email</span>
+            <span class="action-text">Zmień lub dodaj prywatny adres email dla konta.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="action-card" href="{{url_reset_password}}">
+            <span class="action-title">Reset hasła</span>
+            <span class="action-text">Otrzymaj jednorazowy link do ustawienia nowego hasła.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="action-card" href="{{url_delete_account}}">
+            <span class="action-title">Usuń konto</span>
+            <span class="action-text">Trwale usuń konto Jabber po potwierdzeniu e-mail.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Co możesz zrobić</h2>
+    <ul class="feature-list">
+        <li>Dwuetapowa rejestracja z linkiem aktywacyjnym</li>
+        <li>Zmiana prywatnego emaila potwierdzana e-mailem</li>
+        <li>Reset hasła z limitem prób</li>
+        <li>Usunięcie konta z potwierdzeniem hasła</li>
+        <li>Interfejs w języku angielskim, rosyjskim, ukraińskim i polskim</li>
+    </ul>
+</section>
+
+<section class="section prose">
+    <h2>Dostępne domeny</h2>
+    <p>Konto można utworzyć w jednej z tych domen:</p>
+    <ul class="host-list">{{hosts_list}}</ul>
+</section>

@@ -61,7 +61,8 @@ return [
     'mail' => [
         'transport' => 'smtp',
         'from_email' => 'noreply@test.localhost',
-        'from_name' => 'EAM Test',
+        // Пусто — используется app.name.
+        'from_name' => '',
         'smtp' => [
             'host' => '127.0.0.1',
             'port' => 1025,

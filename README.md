@@ -34,6 +34,9 @@ Standalone PHP-аналог WordPress-плагина **Ejabberd Account Tools** 
     config/
       config.example.php
       config.php          # gitignored
+    content/
+      landing/*.html
+      footer/*.html
   server/                 # не-shared запуск и dev-скрипты
   docs/                   # документация
   tests/                  # тесты
@@ -129,6 +132,7 @@ tests/real-smoke.sh   # требует .testenv/config.real.php
 ## Документация
 
 - `docs/INSTALL.md` — установка на shared-хостинг.
+- `docs/CONTENT.md` — landing и футер в HTML-файлах.
 - `docs/CONFIG.md` — параметры конфига.
 - `docs/EJABBERD.md` — `mod_http_api`, `api_permissions`, Basic/OAuth.
 - `docs/PROGRESS.md` — журнал решений и проверок.

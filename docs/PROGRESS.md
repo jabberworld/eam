@@ -216,3 +216,18 @@
   сайта встречается в теле один раз; также проверяется сохранение `?lang`.
 - Unit 9/9, integration, subdir, real-smoke — все прошли.
 - Коммит: `72aa2c3 fix: start emails with greeting and persist ?lang`.
+
+## 2026-11-20 — контент-файлы landing и футера
+
+- Landing и футер вынесены в `_app/content/landing/{locale}.html` и
+  `_app/content/footer/{locale}.html` для en/ru/uk/pl.
+- `templates/landing.php` стал обёрткой, `layout.php` вставляет `footerHtml`.
+- Новый `Eam\Support\Content`: выбор локали, fallback на `app.default_locale`
+  и `en`, placeholders `{{site_name}}`, `{{hosts_chips}}`, `{{hosts_list}}`,
+  URL-ы и `{{year}}`.
+- `app.name` закреплён как единый источник названия сайта; `<title>` главной
+  больше не дублирует название; `mail.from_name` при пустом значении берёт
+  `app.name`.
+- Из `_app/lang/*.php` удалены блоки `landing`, `footer`, `site`.
+- Добавлен `docs/CONTENT.md`; обновлены README, INSTALL и CONFIG.
+- Тесты: unit 10/10, integration (контент и fallback), subdir, real-smoke.

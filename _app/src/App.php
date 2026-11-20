@@ -21,6 +21,7 @@ use Eam\Service\RegistrationService;
 use Eam\Service\Result;
 use Eam\Storage\StorageFactory;
 use Eam\Storage\StorageInterface;
+use Eam\Support\Content;
 use Eam\Support\Logger;
 use Eam\Support\View;
 use Eam\Validation\DisposableEmailChecker;
@@ -33,6 +34,7 @@ final class App
     private Router $router;
     private Translator $translator;
     private View $view;
+    private Content $content;
     private Logger $logger;
     private StorageInterface $storage;
     private Client $client;
@@ -94,6 +96,7 @@ final class App
             $this->session,
             dirname(__DIR__) . '/templates'
         );
+        $this->content = new Content(dirname(__DIR__) . '/content', $this->config, $this->logger);
         $this->storage = StorageFactory::create($this->config, $this->logger);
         $this->client = new Client($this->config, $this->logger);
         $this->mailer = MailerFactory::create($this->config);
@@ -187,12 +190,10 @@ final class App
 
     private function home(Request $request): Response
     {
-        $features = $this->translator->get('landing.features');
         return $this->page('landing', [
-            'title' => $this->t('landing.title'),
+            'title' => (string) $this->config->get('app.name', 'Jabber'),
             'active' => 'home',
-            'hosts' => (array) $this->config->get('registration.hosts', []),
-            'features' => is_array($features) ? $features : [],
+            'landingHtml' => $this->content->landing($this->translator->locale()),
         ]);
     }
 
@@ -612,6 +613,7 @@ final class App
             'active' => '',
             'returnTo' => $this->currentReturn(),
             'csrf' => $this->session->csrfToken(),
+            'footerHtml' => $this->content->footer($this->translator->locale()),
         ];
         return Response::html($this->view->render($template, $data), $status);
     }

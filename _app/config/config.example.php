@@ -12,6 +12,7 @@ $appDir = defined('EAM_APP_DIR') ? EAM_APP_DIR : dirname(__DIR__);
 
 return [
     'app' => [
+        // Единое название сайта: header, title, письма, footer.
         'name' => 'Jabber Account Manager',
         'base_url' => 'https://example.com',
         'default_locale' => 'ru',
@@ -93,7 +94,8 @@ return [
         // smtp | mail
         'transport' => 'smtp',
         'from_email' => 'noreply@example.com',
-        'from_name' => 'Jabber Account Manager',
+        // Пусто — использовать app.name.
+        'from_name' => '',
         'smtp' => [
             'host' => '127.0.0.1',
             'port' => 1025,

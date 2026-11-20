@@ -23,7 +23,7 @@ $nav = [
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title><?= e($title) ?> — <?= e($siteName) ?></title>
+    <title><?= e($title) ?><?= $title !== $siteName ? ' — ' . e($siteName) : '' ?></title>
     <link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>">
 </head>
 <body>
@@ -61,8 +61,7 @@ $nav = [
 
 <footer class="site-footer">
     <div class="container footer-inner">
-        <p><?= e($t('footer.text', [':site' => $siteName])) ?></p>
-        <p class="muted"><?= e($t('footer.security')) ?></p>
+        <?= $footerHtml ?>
     </div>
 </footer>
 <script>window.EAM_I18N = <?= json_encode([

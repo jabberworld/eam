@@ -23,7 +23,7 @@ final class View
     public function render(string $template, array $data = []): string
     {
         $data += [
-            'title' => (string) $this->translator->get('site.title'),
+            'title' => (string) $this->config->get('app.name', 'Jabber'),
             'active' => '',
             'flash' => $this->session->pullFlash(),
         ];

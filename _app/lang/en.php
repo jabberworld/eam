@@ -1,11 +1,6 @@
 <?php
 return [
     'locale' => ['en' => 'English', 'ru' => 'Русский', 'uk' => 'Українська', 'pl' => 'Polski'],
-    'site' => [
-        'title' => 'Jabber Account Manager',
-        'tagline' => 'Registration and account management for your Jabber server',
-        'description' => 'Create a Jabber account, change your private email, reset your password or delete your account.',
-    ],
     'nav' => [
         'home' => 'Home',
         'registration' => 'Registration',
@@ -14,45 +9,6 @@ return [
         'delete_account' => 'Delete account',
         'language' => 'Language',
         'menu' => 'Main menu',
-    ],
-    'footer' => [
-        'text' => 'Account management for :site.',
-        'security' => 'Confirmation links are single-use and time-limited. Never share your password with anyone.',
-    ],
-    'landing' => [
-        'title' => 'Jabber account tools',
-        'eyebrow' => 'Jabber / XMPP',
-        'welcome' => 'Welcome!',
-        'intro' => 'This site lets you register a Jabber account and manage it: change your private email, reset your password or delete your account. All sensitive actions are confirmed by email.',
-        'hosts_title' => 'Available domains',
-        'hosts_text' => 'You can create an account on one of these domains:',
-        'actions_title' => 'Account management',
-        'action' => [
-            'registration' => [
-                'title' => 'Registration',
-                'text' => 'Create a new Jabber account with email confirmation.',
-            ],
-            'change_email' => [
-                'title' => 'Change email',
-                'text' => 'Change or add the private email address for your account.',
-            ],
-            'reset_password' => [
-                'title' => 'Reset password',
-                'text' => 'Receive a one-time link to set a new password.',
-            ],
-            'delete_account' => [
-                'title' => 'Delete account',
-                'text' => 'Permanently delete your Jabber account after email confirmation.',
-            ],
-        ],
-        'features_title' => 'What you can do',
-        'features' => [
-            'Two-step registration with an activation link',
-            'Private email changes confirmed by email',
-            'Password reset with attempt limits',
-            'Account deletion with password confirmation',
-            'Interface in English, Russian, Ukrainian and Polish',
-        ],
     ],
     'common' => [
         'username' => 'Username',

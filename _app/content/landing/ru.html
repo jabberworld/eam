@@ -1,0 +1,49 @@
+<section class="hero">
+    <p class="eyebrow">Jabber / XMPP</p>
+    <h1>Добро пожаловать!</h1>
+    <p class="lead">Эта страница служит для регистрации Jabber-аккаунта и управления им: можно изменить приватный email, сбросить пароль или удалить аккаунт. Все важные действия подтверждаются письмом.</p>
+    <div class="host-chips">{{hosts_chips}}</div>
+</section>
+
+<section class="section">
+    <h2>Управление аккаунтом</h2>
+    <div class="action-grid">
+        <a class="action-card primary" href="{{url_registration}}">
+            <span class="action-title">Регистрация</span>
+            <span class="action-text">Создать новый Jabber-аккаунт с подтверждением по email.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="action-card" href="{{url_change_email}}">
+            <span class="action-title">Изменить email</span>
+            <span class="action-text">Изменить или добавить приватный email для аккаунта.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="action-card" href="{{url_reset_password}}">
+            <span class="action-title">Сброс пароля</span>
+            <span class="action-text">Получить одноразовую ссылку для установки нового пароля.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="action-card" href="{{url_delete_account}}">
+            <span class="action-title">Удалить аккаунт</span>
+            <span class="action-text">Безвозвратно удалить Jabber-аккаунт после подтверждения по email.</span>
+            <span class="action-arrow" aria-hidden="true">→</span>
+        </a>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Что можно сделать</h2>
+    <ul class="feature-list">
+        <li>Двухэтапная регистрация со ссылкой активации</li>
+        <li>Смена приватного email с подтверждением</li>
+        <li>Сброс пароля с ограничением попыток</li>
+        <li>Удаление аккаунта с подтверждением пароля</li>
+        <li>Интерфейс на английском, русском, украинском и польском</li>
+    </ul>
+</section>
+
+<section class="section prose">
+    <h2>Доступные домены</h2>
+    <p>Аккаунт можно создать на одном из этих доменов:</p>
+    <ul class="host-list">{{hosts_list}}</ul>
+</section>

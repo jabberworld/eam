@@ -145,6 +145,13 @@ location / { try_files $uri $uri/ /index.php?$query_string; }
 location /eam/ { try_files $uri $uri/ /eam/index.php?$query_string; }
 ```
 
+## Контент landing и футера
+
+Тексты главной и футера лежат в `_app/content/landing/{locale}.html` и
+`_app/content/footer/{locale}.html`. Поддерживаются placeholders
+`{{site_name}}`, `{{hosts_chips}}`, `{{hosts_list}}`, URL-ы и `{{year}}`.
+Подробно: `docs/CONTENT.md`.
+
 ## Конфиг
 
 - Шаблон: `_app/config/config.example.php`.

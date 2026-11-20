@@ -7,7 +7,7 @@
 
 | Ключ | Назначение |
 |---|---|
-| `name` | Название сайта в шапке и письмах. |
+| `name` | Единое название сайта: шапка, `<title>`, письма, футер, `{{site_name}}`. |
 | `base_url` | Полный внешний URL без завершающего `/`, включая префикс (`https://example.com/eam`). Используется в ссылках, формах и AJAX. |
 | `default_locale` | Язык по умолчанию: `en`, `ru`, `uk`, `pl`. |
 | `locales` | Доступные языки. |
@@ -96,7 +96,7 @@ head -c 32 /dev/urandom | base64
 |---|---|
 | `transport` | `smtp` или `mail`. |
 | `from_email` | Адрес отправителя. |
-| `from_name` | Имя отправителя. |
+| `from_name` | Имя отправителя. Пусто — используется `app.name`. |
 | `smtp.host` / `port` | SMTP-сервер. |
 | `smtp.encryption` | `none`, `tls` (STARTTLS) или `ssl`. |
 | `smtp.username` / `password` | SMTP Auth; пусто — без авторизации. |

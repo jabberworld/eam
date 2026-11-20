@@ -1,11 +1,6 @@
 <?php
 return [
     'locale' => ['en' => 'English', 'ru' => 'Русский', 'uk' => 'Українська', 'pl' => 'Polski'],
-    'site' => [
-        'title' => 'Zarządzanie kontem Jabber',
-        'tagline' => 'Rejestracja i zarządzanie kontem na serwerze Jabber',
-        'description' => 'Utwórz konto Jabber, zmień prywatny email, zresetuj hasło lub usuń konto.',
-    ],
     'nav' => [
         'home' => 'Strona główna',
         'registration' => 'Rejestracja',
@@ -14,45 +9,6 @@ return [
         'delete_account' => 'Usuń konto',
         'language' => 'Język',
         'menu' => 'Menu główne',
-    ],
-    'footer' => [
-        'text' => 'Zarządzanie kontem dla :site.',
-        'security' => 'Linki potwierdzające są jednorazowe i ograniczone czasowo. Nigdy nie udostępniaj nikomu swojego hasła.',
-    ],
-    'landing' => [
-        'title' => 'Narzędzia konta Jabber',
-        'eyebrow' => 'Jabber / XMPP',
-        'welcome' => 'Witaj!',
-        'intro' => 'Ta strona służy do rejestracji konta Jabber i zarządzania nim: możesz zmienić prywatny email, zresetować hasło lub usunąć konto. Wszystkie ważne działania są potwierdzane e-mailem.',
-        'hosts_title' => 'Dostępne domeny',
-        'hosts_text' => 'Konto można utworzyć w jednej z tych domen:',
-        'actions_title' => 'Zarządzanie kontem',
-        'action' => [
-            'registration' => [
-                'title' => 'Rejestracja',
-                'text' => 'Utwórz nowe konto Jabber z potwierdzeniem e-mail.',
-            ],
-            'change_email' => [
-                'title' => 'Zmień email',
-                'text' => 'Zmień lub dodaj prywatny adres email dla konta.',
-            ],
-            'reset_password' => [
-                'title' => 'Reset hasła',
-                'text' => 'Otrzymaj jednorazowy link do ustawienia nowego hasła.',
-            ],
-            'delete_account' => [
-                'title' => 'Usuń konto',
-                'text' => 'Trwale usuń konto Jabber po potwierdzeniu e-mail.',
-            ],
-        ],
-        'features_title' => 'Co możesz zrobić',
-        'features' => [
-            'Dwuetapowa rejestracja z linkiem aktywacyjnym',
-            'Zmiana prywatnego emaila potwierdzana e-mailem',
-            'Reset hasła z limitem prób',
-            'Usunięcie konta z potwierdzeniem hasła',
-            'Interfejs w języku angielskim, rosyjskim, ukraińskim i polskim',
-        ],
     ],
     'common' => [
         'username' => 'Nazwa użytkownika',
